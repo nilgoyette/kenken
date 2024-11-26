@@ -1,8 +1,15 @@
-import { Cage } from "./lib.ts";
+import { Cage, Removal } from "./lib.ts";
 import { range } from "../cell.ts";
 
 export class Minus extends Cage {
-    init(): void {
+    init(): void  {
+        const all = range(1, this.n + 1);
+        for (const cell of this.cells) {
+            cell.possibilities = new Set(all);
+        }
+    }
+
+    solve(): Removal[] {
         const N = this.n + 1;
         if (this.result >= N / 2) {
             const stop =  this.n - this.result;
@@ -13,5 +20,6 @@ export class Minus extends Cage {
         } else {
             this.set_to_all_cells(new Set(range(1, N)));
         }
+        return [];
     }
 }

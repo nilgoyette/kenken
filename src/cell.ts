@@ -12,6 +12,14 @@ export class Cell {
         this.used = false;
         this.trying = 0;
     }
+
+    answer(): number {
+        if (this.possibilities.size == 1) {
+            const [answer] = this.possibilities;
+            return answer;
+        }
+        return 0;
+    }
 };
 
 export function range(start: number, end: number): number[] {

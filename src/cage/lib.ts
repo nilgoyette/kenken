@@ -1,16 +1,16 @@
 import { Cell, Position } from "../cell.ts";
 
-export type Direction = "row" | "colunn";
+export type Direction = "row" | "col";
 
 export type Operation = "+" | "-" | "*" | "/" | "=";
 
 export class Removal {
-    readonly asked_by: Cage;
+    readonly position: Position;
     readonly direction: Direction;
     readonly numbers: number[];
 
-    constructor(asked_by: Cage, direction: Direction, numbers: number[]) {
-        this.asked_by = asked_by;
+    constructor(position: Position, direction: Direction, numbers: number[]) {
+        this.position = position;
         this.direction = direction;
         this.numbers = numbers;
     }
@@ -18,23 +18,19 @@ export class Removal {
 
 export abstract class Cage {
     readonly n: number;
+    readonly result: number;
     cells: Cell[];
-    result: number;
 
     constructor(n: number, cells: Cell[], result: number) {
         this.n = n;
-        this.cells = cells;
         this.result = result;
-
-        // This is only useful in the tests where we often re-use the cells
-        for (const cell of this.cells) {
-            cell.possibilities = new Set;
-        }
+        this.cells = cells;
 
         this.init();
     }
 
     abstract init(): void;
+    abstract solve(): Removal[];
 
     is_straight_line(): boolean {
         const [Y, X] = this.cells[0].position;

@@ -1,4 +1,4 @@
-import { Cage } from "./lib.ts";
+import { Cage, Removal } from "./lib.ts";
 
 const SAME_AS = [
     0, 0, 0, 0, 4, 4, 6, 6, 8, 9
@@ -14,7 +14,7 @@ const DIVISORS = new Map<string, Set<number>>([
 ]);
 
 export class Divide extends Cage {
-    init(): void {
+    init(): void  {
         const at = SAME_AS[this.n];
         const key = [at, this.result].join(",");
         const divisors = DIVISORS.get(key);
@@ -27,5 +27,9 @@ export class Divide extends Cage {
         const prev = (this.n == 9) ? at - 1 : at - 2;
         const key2 = [prev, this.result].join(",");
         this.set_to_all_cells(DIVISORS.get(key2)!);
+    }
+
+    solve(): Removal[] {
+        return [];
     }
 }

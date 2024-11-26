@@ -1,4 +1,4 @@
-import { Cage } from "./lib.ts";
+import { Cage, Removal } from "./lib.ts";
 
 const FACTORS = new Map<number, number[]>([
     [4, [2, 4]],
@@ -62,7 +62,18 @@ const FACTORS = new Map<number, number[]>([
 ]);
 
 export class Times extends Cage {
-    init(): void {
+    init(): void  {
+        const factors = new Set<number>;
+        for (let f = 1; f <= this.n; f++) {
+            const d = this.result / f;
+            if (Number.isInteger(d)) {
+                factors.add(f);
+            }
+        }
+        this.set_to_all_cells(factors);
+    }
+
+    solve(): Removal[] {
         let factors = FACTORS.get(this.result);
         if (!factors) {
             // We got a prime number.
@@ -71,6 +82,7 @@ export class Times extends Cage {
             factors = factors.filter((n) => n <= this.n)
         }
         this.recursive([1].concat(factors), 0, 1);
+        return [];
     }
 
     recursive(factors: number[], at: number, product: number): boolean {
