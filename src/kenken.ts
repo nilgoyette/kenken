@@ -106,6 +106,12 @@ export class KenKen {
                 this.print();
             }
 
+            // 3 Find double and triple
+            if (this.find_double()) {
+                console.log(">>> 3");
+                this.print();
+            }
+
             new_nb_unknown = this.nb_unknown();
             if (new_nb_unknown == 0) {
                 break;
@@ -162,6 +168,51 @@ export class KenKen {
                     this.remove_cross_at(cell);
                     at_least_one = true;
                 }
+            }
+        }
+        return at_least_one;
+    }
+
+    find_double(): boolean {
+        let at_least_one = false;
+        for (const row of this.rows) {
+            if (this.find_double_in_line(row)) {
+                at_least_one = true;
+            }
+        }
+        for (const col of this.cols) {
+            if (this.find_double_in_line(col)) {
+                at_least_one = true;
+            }
+        }
+        return at_least_one;
+    }
+
+    find_double_in_line(line: Cell[]): boolean {
+        let at_least_one = false;
+        for (const c1 of line) {
+            if (c1.possibilities.size < 2) {
+                continue;
+            }
+
+            const safe_cells = [c1];
+            for (const c2 of line) {
+                if (c1 != c2) {
+                    if (c2.possibilities.isSubsetOf(c1.possibilities)) {
+                        safe_cells.push(c2);
+                    }
+                }
+            }
+            if (safe_cells.length == c1.possibilities.size) {
+                const numbers = [...c1.possibilities];
+                if (c1.position[0] == safe_cells[1].position[0]) {
+                    const y = c1.position[0];
+                    this.remove_possibility_on_row(safe_cells, y, numbers);
+                } else {
+                    const x = c1.position[1];
+                    this.remove_possibility_on_col(safe_cells, x, numbers);
+                }
+                at_least_one = true;
             }
         }
         return at_least_one;
