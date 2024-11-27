@@ -100,6 +100,12 @@ export class KenKen {
                 this.print();
             }
 
+            // 2 Find unique
+            if (this.find_unique()) {
+                console.log(">>> 2");
+                this.print();
+            }
+
             new_nb_unknown = this.nb_unknown();
             if (new_nb_unknown == 0) {
                 break;
@@ -121,6 +127,40 @@ export class KenKen {
                 const answer = cell.answer();
                 if (answer) {
                     this.remove_cross_at(cell);
+                }
+            }
+        }
+        return at_least_one;
+    }
+
+    find_unique(): boolean {
+        let at_least_one = false;
+        for (const row of this.rows) {
+            if (this.find_unique_in_line(row)) {
+                at_least_one = true;
+            }
+        }
+        for (const col of this.cols) {
+            if (this.find_unique_in_line(col)) {
+                at_least_one = true;
+            }
+        }
+        return at_least_one;
+    }
+
+    find_unique_in_line(line: Cell[]): boolean {
+        let at_least_one = false;
+        for (let i = 1; i <= this.n; i++) {
+            const has_it = line.map(
+                (c) => c.possibilities.has(i)
+            );
+            if (has_it.filter((c) => c).length == 1) {
+                const cell = line[has_it.findIndex((c) => c)];
+                // This is to avoid catching cell which we already have the answer
+                if (cell.possibilities.size > 1) {
+                    cell.possibilities = new Set([i]);
+                    this.remove_cross_at(cell);
+                    at_least_one = true;
                 }
             }
         }
