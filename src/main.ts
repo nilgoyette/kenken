@@ -18,8 +18,6 @@ import { KenKen } from "./kenken.ts"
     k.add([[3, 4], [4, 4]], "+", 7);
     k.add_eq([0, 4], 1);
     k.add_eq([4, 3], 5);
-    k.print();
-    k.solve();
     expect(k.solve()).toEqual([
         [3, 2, 5, 4, 1],
         [5, 1, 2, 3, 4],

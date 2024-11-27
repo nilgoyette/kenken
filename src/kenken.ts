@@ -79,7 +79,7 @@ export class KenKen {
         }
     }
 
-    solve(): void {
+    solve(): number[][] {
         const cage_eq = this.cages.filter((c) => c instanceof Equal);
         const cages = this.cages.filter((c) => !(c instanceof Equal));
 
@@ -105,6 +105,12 @@ export class KenKen {
                 break;
             }
         } while (new_nb_unknown < last_nb_unknown);
+
+        const answer: number[][] = [];
+        for (const row of this.rows) {
+            answer.push(row.map((c) => c.answer()));
+        }
+        return answer;
     }
 
     solve_cages(cages: Cage[]): boolean {
