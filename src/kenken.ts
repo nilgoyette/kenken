@@ -40,6 +40,11 @@ export class KenKen {
     }
 
     add_cell(cells: Cell[], op: Operation, result: number): void {
+        // Keep the id of the cage so we can know later if a cell is in the same cage as
+        // another (simply compare their cage_id)
+        const cage_id = this.cages.length;
+        cells.forEach((c) => c.cage_id = cage_id);
+
         let cage: Cage;
         switch (op) {
             case "+": cage = new Plus(this.n, cells, result); break;

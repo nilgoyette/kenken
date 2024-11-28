@@ -3,13 +3,15 @@ export type Position = [number, number];
 export class Cell {
     position: Position;
     possibilities: Set<number>;
-    used: boolean
-    trying: number
+    used: boolean;
+    cage_id: number;
+    trying: number;
 
     constructor(position: Position) {
         this.position = position;
         this.possibilities = new Set<number>;
         this.used = false;
+        this.cage_id = -1;
         this.trying = 0;
     }
 
