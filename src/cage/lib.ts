@@ -29,7 +29,21 @@ export abstract class Cage {
         this.init();
     }
 
+    /**
+     * Initialize the cage with possible numbers.
+     * 
+     * Doesn't check any other cells, cages or lines. It's simply an heuristic to fill the cells'
+     * `possibilities` sets.
+     */
     abstract init(): void;
+
+    /**
+     * Remove as much possibilities as possible from the cells.
+     * 
+     * Ensures coherency **only** in the cage. Doesn't check the other cages or lines. This method
+     * can be somewhat "slow" because it starts a bruteforce for all cells and all their
+     * possibilities.
+     */
     abstract solve(): Removal[];
 
     is_straight_line(): boolean {
