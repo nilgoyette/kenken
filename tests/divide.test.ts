@@ -1,18 +1,14 @@
 import { describe, it } from "jsr:@std/testing/bdd";
-import { expect } from "jsr:@std/expect";
 
 import { Divide } from "../src/cage/divide.ts";
 import { Cell } from "../src/cell.ts";
+import { test_cage_generic } from "./utils.ts"
 
 const c1 = new Cell([0, 0]);
 const c2 = new Cell([0, 1]);
 
 function test_cage(n: number, result: number, gt: number[]) {
-    const set = new Set(gt);
-    const cage = new Divide(n, [c1, c2], result);
-    if (!cage.cells.every((cell) => cell.possibilities == set)) {
-        expect(cage.cells[0].possibilities).toEqual(set);
-    }
+    test_cage_generic(Divide, n, [c1, c2], result, gt);
 }
 
 describe('testing /, all N', () => {

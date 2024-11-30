@@ -4,8 +4,7 @@ export class Times extends Cage {
     init(): void  {
         const factors = new Set<number>;
         for (let f = 1; f <= this.n; f++) {
-            const d = this.result / f;
-            if (Number.isInteger(d)) {
+            if (Number.isInteger(this.result / f)) {
                 factors.add(f);
             }
         }

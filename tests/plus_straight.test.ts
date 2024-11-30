@@ -1,8 +1,8 @@
 import { describe, it } from "jsr:@std/testing/bdd";
-import { expect } from "jsr:@std/expect";
 
 import { Plus } from "../src/cage/plus.ts";
 import { Cell } from "../src/cell.ts";
+import { test_cage_generic } from "./utils.ts"
 
 const _c1 = new Cell([0, 0]);
 const _c2 = new Cell([0, 1]);
@@ -19,11 +19,7 @@ const c6 = [_c1, _c2, _c3, _c4, _c5, _c6];
 const c7 = [_c1, _c2, _c3, _c4, _c5, _c6, _c7];
 
 function test_cage(n: number, cells: Cell[], result: number, gt: number[]) {
-    const set = new Set(gt);
-    const cage = new Plus(n, cells, result);
-    if (!cage.cells.every((cell) => cell.possibilities == set)) {
-        expect(cage.cells[0].possibilities).toEqual(set);
-    }
+    test_cage_generic(Plus, n, cells, result, gt);
 }
 
 describe('testing +, N = 3', () => {

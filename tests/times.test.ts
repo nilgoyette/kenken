@@ -1,42 +1,15 @@
 import { describe, it } from "jsr:@std/testing/bdd";
-import { expect } from "jsr:@std/expect";
 
 import { Times } from "../src/cage/times.ts";
 import { Cell } from "../src/cell.ts";
-
-/*
-c1 c2 c3
-c4 c5 c6
-c7 c8 c9
-*/
-const _c1 = new Cell([0, 0]);
-const _c2 = new Cell([0, 1]);
-const _c3 = new Cell([0, 2]);
-const _c4 = new Cell([1, 0]);
-const _c5 = new Cell([1, 1]);
-const _c6 = new Cell([1, 2]);
-const _c7 = new Cell([2, 0]);
-const _c8 = new Cell([2, 1]);
-const _c9 = new Cell([2, 2]);
-const SQUARE = [_c1, _c2, _c4, _c5];
-const TRI = [_c1, _c4, _c5];
-const L1 = [_c1, _c4, _c7, _c8];
+import { test_cage_generic, test_cage2_generic, SQUARE, TRI, L1 } from "./utils.ts"
 
 function test_cage(n: number, cells: Cell[], result: number, gt: number[]) {
-    const set = new Set(gt);
-    const cage = new Times(n, cells, result);
-    for (let i = 0; i < cells.length; i++) {
-        expect(cage.cells[i].possibilities).toEqual(set);
-    }
+    test_cage_generic(Times, n, cells, result, gt);
 }
 
 function test_cage2(n: number, cells: Cell[], result: number, all_gt: number[][]) {
-    const cage = new Times(n, cells, result);
-    for (let i = 0; i < all_gt.length; i++) {
-        const cell = cage.cells[i];
-        const gt = new Set(all_gt[i]);
-        expect(cell.possibilities).toEqual(gt);
-    }
+    test_cage2_generic(Times, n, cells, result, all_gt);
 }
 
 describe('testing squares', () => {
