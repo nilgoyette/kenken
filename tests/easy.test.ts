@@ -1,6 +1,7 @@
 import { expect } from "jsr:@std/expect";
 
 import { KenKen } from "../src/kenken.ts"
+import { Solver } from "../src/solver.ts";
 
 {
     // 7025 Easy +
@@ -16,7 +17,8 @@ import { KenKen } from "../src/kenken.ts"
     k.add([[2, 4], [3, 4]], "+", 9);
     k.add([[4, 3], [4, 4]], "+", 7);
     k.add_eq([0, 3], 1);
-    expect(k.solve()).toEqual([
+    const s = new Solver(k, false);
+    expect(s.solve()).toEqual([
         [4, 2, 5, 1, 3],
         [5, 4, 2, 3, 1],
         [3, 5, 1, 2, 4],
@@ -40,7 +42,8 @@ import { KenKen } from "../src/kenken.ts"
     k.add_eq([3, 0], 4);
     k.add_eq([0, 3], 1);
     k.add_eq([4, 2], 1);
-    expect(k.solve()).toEqual([
+    const s = new Solver(k, false);
+    expect(s.solve()).toEqual([
         [5, 2, 4, 1, 3],
         [3, 1, 5, 4, 2],
         [1, 3, 2, 5, 4],
@@ -63,7 +66,8 @@ import { KenKen } from "../src/kenken.ts"
     k.add([[3, 3], [3, 4]], "+", 5);
     k.add([[4, 3], [4, 4]], "+", 9);
     k.add_eq([3, 2], 5);
-    expect(k.solve()).toEqual([
+    const s = new Solver(k, false);
+    expect(s.solve()).toEqual([
         [4, 5, 1, 3, 2],
         [1, 4, 3, 2, 5],
         [5, 2, 4, 1, 3],

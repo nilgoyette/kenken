@@ -1,6 +1,7 @@
 import { expect } from "jsr:@std/expect";
 
 import { KenKen } from "../src/kenken.ts"
+import { Solver } from "../src/solver.ts";
 
 {
     // 6766 Easiest +
@@ -18,7 +19,8 @@ import { KenKen } from "../src/kenken.ts"
     k.add([[3, 4], [4, 4]], "+", 7);
     k.add_eq([0, 4], 1);
     k.add_eq([4, 3], 5);
-    expect(k.solve()).toEqual([
+    const s = new Solver(k, false);
+    expect(s.solve()).toEqual([
         [3, 2, 5, 4, 1],
         [5, 1, 2, 3, 4],
         [1, 5, 4, 2, 3],
@@ -43,7 +45,8 @@ import { KenKen } from "../src/kenken.ts"
     k.add([[3, 4], [4, 4]], "-", 4);
     k.add_eq([2, 4], 3);
     k.add_eq([4, 3], 2);
-    expect(k.solve()).toEqual([
+    const s = new Solver(k, false);
+    expect(s.solve()).toEqual([
         [3, 5, 2, 1, 4],
         [1, 4, 3, 5, 2],
         [5, 2, 1, 4, 3],

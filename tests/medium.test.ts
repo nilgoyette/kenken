@@ -1,6 +1,7 @@
 import { expect } from "jsr:@std/expect";
 
 import { KenKen } from "../src/kenken.ts"
+import { Solver } from "../src/solver.ts";
 
 {
     // 56429 MEDIUM +-/*
@@ -18,7 +19,8 @@ import { KenKen } from "../src/kenken.ts"
     k.add_eq([0, 0], 5);
     k.add_eq([2, 4], 3);
     k.add_eq([3, 1], 3);
-    expect(k.solve()).toEqual([
+    const s = new Solver(k, false);
+    expect(s.solve()).toEqual([
         [5, 4, 3, 2, 1],
         [3, 1, 5, 4, 2],
         [2, 5, 4, 1, 3],
@@ -42,7 +44,8 @@ import { KenKen } from "../src/kenken.ts"
     k.add([[0, 3], [1, 3]], "/", 2);
     k.add([[3, 4], [4, 4]], "/", 2);
     k.add_eq([2, 4], 3);
-    expect(k.solve()).toEqual([
+    const s = new Solver(k, false);
+    expect(s.solve()).toEqual([
         [3, 4, 5, 2, 1],
         [4, 2, 3, 1, 5],
         [1, 5, 2, 4, 3],
