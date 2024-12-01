@@ -247,11 +247,7 @@ export class KenKen {
         const cell = this.cells[y][x];
         if (!safe_cells.includes(cell)) {
             const possibilities = cell.possibilities;
-            const removed = numbers.map((i) => possibilities.delete(i));
-            /*if (removed.some((b) => b) && cell.possibilities.size == 1) {
-                const [number] = cell.possibilities;
-                this.remove_possibility(cage, new Removal([y, x], 'row', [number]));
-            }*/
+            numbers.map((i) => possibilities.delete(i));
         }
     }
 
