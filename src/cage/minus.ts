@@ -1,7 +1,7 @@
-import { Cage } from "./lib.ts";
+import { CageDouble } from "./lib.ts";
 import { range } from "../cell.ts";
 
-export class Minus extends Cage {
+export class Minus extends CageDouble {
     init(): void  {
         const N = this.n + 1;
         if (this.result >= N / 2) {
@@ -15,31 +15,7 @@ export class Minus extends Cage {
         }
     }
 
-    solve(): boolean {
-        const c1 = this.cells[0];
-        const c2 = this.cells[1];
-        const nb_before_1 = c1.possibilities.size;
-        const nb_before_2 = c2.possibilities.size;
-        c1.possibilities = solve_side(c1.possibilities, c2.possibilities, this.result);
-        c2.possibilities = solve_side(c2.possibilities, c1.possibilities, this.result);
-        return (c1.possibilities.size != nb_before_1) || (c2.possibilities.size != nb_before_2);
+    ops(a: number, b: number): number {
+        return a - b;
     }
-}
-
-function solve_side(p1: Set<number>, p2: Set<number>, result: number): Set<number> {
-    const new_possibilities = new Set<number>;
-    for (const n1 of p1) {
-        let at_least_one = false;
-        for (const n2 of p2) {
-            const d = Math.abs(n1 - n2);
-            if (d == result) {
-                at_least_one = true;
-                break;
-            }
-        }
-        if (at_least_one) {
-            new_possibilities.add(n1);
-        }
-    }
-    return new_possibilities;
 }
