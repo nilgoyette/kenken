@@ -1,4 +1,4 @@
-import { Cage, Removal } from "./lib.ts";
+import { Cage } from "./lib.ts";
 import { range } from "../cell.ts";
 
 export class Minus extends Cage {
@@ -15,12 +15,14 @@ export class Minus extends Cage {
         }
     }
 
-    solve(): Removal[] {
+    solve(): boolean {
         const c1 = this.cells[0];
         const c2 = this.cells[1];
+        const nb_before_1 = c1.possibilities.size;
+        const nb_before_2 = c2.possibilities.size;
         c1.possibilities = solve_side(c1.possibilities, c2.possibilities, this.result);
         c2.possibilities = solve_side(c2.possibilities, c1.possibilities, this.result);
-        return [];
+        return (c1.possibilities.size != nb_before_1) || (c2.possibilities.size != nb_before_2);
     }
 }
 

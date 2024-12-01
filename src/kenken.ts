@@ -94,34 +94,33 @@ export class KenKen {
         }
         this.print();
         
-        let last_nb_unknown = 0;
-        let new_nb_unknown = this.nb_unknown();
+        let at_least_one = false;
         do {
-            last_nb_unknown = new_nb_unknown;
-
             // 1 Solve the cages
             if (this.solve_cages(cages)) {
+                at_least_one = true;
                 console.log(">>> 1");
                 this.print();
             }
 
             // 2 Find unique
             if (this.find_unique()) {
+                at_least_one = true;
                 console.log(">>> 2");
                 this.print();
             }
 
             // 3 Find double and triple
             if (this.find_double()) {
+                at_least_one = true;
                 console.log(">>> 3");
                 this.print();
             }
 
-            new_nb_unknown = this.nb_unknown();
-            if (new_nb_unknown == 0) {
+            if (this.nb_unknown() == 0) {
                 break;
             }
-        } while (new_nb_unknown < last_nb_unknown);
+        } while (at_least_one);
 
         const answer: number[][] = [];
         for (const row of this.rows) {
@@ -131,9 +130,12 @@ export class KenKen {
     }
 
     solve_cages(cages: Cage[]): boolean {
-        let at_least_one = true;
+        let at_least_one = false;
         for (const cage of cages) {
-            cage.solve();
+            if (cage.solve()) {
+                at_least_one = true;
+            }
+
             for (const cell of cage.cells) {
                 const answer = cell.answer();
                 if (answer) {

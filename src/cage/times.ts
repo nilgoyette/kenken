@@ -1,4 +1,4 @@
-import { Cage, Removal } from "./lib.ts";
+import { Cage } from "./lib.ts";
 
 export class Times extends Cage {
     init(): void  {
@@ -11,7 +11,7 @@ export class Times extends Cage {
         this.set_to_all_cells(factors);
     }
 
-    solve(): Removal[] {
+    solve(): boolean {
         // We save the possibilities
         // - so that`recurse` uses it for bruteforcing
         // - because `recurse` will fill the possibilities with the next ones.
@@ -20,8 +20,7 @@ export class Times extends Cage {
             current_possibilities.push(structuredClone(cell.possibilities));
             cell.possibilities = new Set<number>;
         }
-        this.recurse(current_possibilities, 0, 1);
-        return [];
+        return this.recurse(current_possibilities, 0, 1);
     }
 
     recurse(current_possibilities: Set<number>[], at: number, product: number): boolean {

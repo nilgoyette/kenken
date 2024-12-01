@@ -1,4 +1,4 @@
-import { Cage, Removal } from "./lib.ts";
+import { Cage } from "./lib.ts";
 
 export class Equal extends Cage {
     init(): void  {
@@ -6,7 +6,7 @@ export class Equal extends Cage {
         this.cells[0].possibilities = new Set([this.result]);
     }
 
-    solve(): Removal[] {
-        return [];
+    solve(): boolean {
+        return false;
     }
 }

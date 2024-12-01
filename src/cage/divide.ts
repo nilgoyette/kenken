@@ -1,4 +1,4 @@
-import { Cage, Removal } from "./lib.ts";
+import { Cage } from "./lib.ts";
 
 const SAME_AS = [
     0, 0, 0, 0, 4, 4, 6, 6, 8, 9
@@ -29,7 +29,7 @@ export class Divide extends Cage {
         this.set_to_all_cells(DIVISORS.get(key2)!);
     }
 
-    solve(): Removal[] {
-        return [];
+    solve(): boolean {
+        return false;
     }
 }

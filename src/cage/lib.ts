@@ -4,18 +4,6 @@ export type Direction = "row" | "col";
 
 export type Operation = "+" | "-" | "*" | "/" | "=";
 
-export class Removal {
-    readonly position: Position;
-    readonly direction: Direction;
-    readonly numbers: number[];
-
-    constructor(position: Position, direction: Direction, numbers: number[]) {
-        this.position = position;
-        this.direction = direction;
-        this.numbers = numbers;
-    }
-}
-
 export abstract class Cage {
     readonly n: number;
     readonly result: number;
@@ -44,7 +32,7 @@ export abstract class Cage {
      * can be somewhat "slow" because it starts a bruteforce for all cells and all their
      * possibilities.
      */
-    abstract solve(): Removal[];
+    abstract solve(): boolean;
 
     is_straight_line(): boolean {
         const [Y, X] = this.cells[0].position;
