@@ -1,6 +1,6 @@
-import { Cage } from "./lib.ts";
+import { CageMore } from "./lib.ts";
 
-export class Times extends Cage {
+export class Times extends CageMore {
     init(): void  {
         const factors = new Set<number>;
         for (let f = 1; f <= this.n; f++) {
@@ -11,41 +11,15 @@ export class Times extends Cage {
         this.set_to_all_cells(factors);
     }
 
-    solve(): boolean {
-        // We save the possibilities
-        // - so that`recurse` uses it for bruteforcing
-        // - because `recurse` will fill the possibilities with the next ones.
-        const current_possibilities: Set<number>[] = [];
-        for (const cell of this.cells) {
-            current_possibilities.push(structuredClone(cell.possibilities));
-            cell.possibilities = new Set<number>;
-        }
-        return this.recurse(current_possibilities, 0, 1);
+    neutral(): number {
+        return 1;
     }
 
-    recurse(current_possibilities: Set<number>[], at: number, product: number): boolean {
-        const cell = this.cells[at];
-        const c_p = current_possibilities[at];
-        if (at == this.cells.length - 1) {
-            const ans = this.result / product;
-            const ok = c_p.has(ans) && this.can_use(ans, cell.position);
-            if (ok) {
-                cell.possibilities.add(ans);
-            }
-            return ok;
-        }
+    ops(a: number, b: number): number {
+        return a * b;
+    }
 
-        let at_least_one = false;
-        for (const f of c_p) {
-            if (this.can_use(f, cell.position)) {
-                cell.trying = f;
-                if (this.recurse(current_possibilities, at + 1, product * f)) {
-                    cell.possibilities.add(f);
-                    at_least_one = true;
-                }
-                cell.trying = 0;
-            }
-        }
-        return at_least_one;
+    whatsLeft(total: number): number {
+        return this.result / total;
     }
 }
