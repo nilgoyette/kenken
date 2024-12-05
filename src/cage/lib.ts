@@ -34,6 +34,11 @@ export abstract class Cage {
      */
     abstract solve(): boolean;
 
+    /**
+     * Force a specific number to appear in one of many cells.
+     */
+    abstract force(cells: Cell[], i: number): boolean;
+
     is_straight_line(): boolean {
         const [Y, X] = this.cells[0].position;
         return this.cells.every((c) => c.position[0] == Y)
@@ -99,6 +104,24 @@ export abstract class CageDouble extends Cage {
         }
         return new_possibilities;
     }
+
+    force(cells: Cell[], i: number): boolean {
+        // There can only be 2 cells, so all cells are in the cage
+        let at_least_one = false;
+        for (const cell of cells) {
+            const new_possibilities = new Set([i]);
+            for (const p of cell.possibilities) {
+                const a = this.ops(i, p);
+                const b = this.ops(p, i);
+                if (a == this.result || b == this.result) {
+                    new_possibilities.add(p);
+                    at_least_one = true;
+                }
+            }
+            cell.possibilities = new_possibilities;
+        }
+        return at_least_one;
+    }
 }
 
 export abstract class CageMore extends Cage {
@@ -142,5 +165,9 @@ export abstract class CageMore extends Cage {
             }
         }
         return at_least_one;
+    }
+
+    force(cells: Cell[], i: number): boolean {
+        return false;
     }
 }

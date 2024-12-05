@@ -77,8 +77,10 @@ export class KenKen {
     assert_free_cell(p: Position): void {
         for (const cage of this.cages) {
             for (const cell of cage.cells) {
-                if (p === cell.position) {
-                    throw new Error('Something bad happened');
+                // Of course there's nothing to compare arrays in fucking JS so we must code it
+                // ourselves like dinosaurs
+                if (cell.position.every(function(v, index) { return v === p[index]})) {
+                    throw new Error('Something bad happened: ' + p);
                 }
             }
         }

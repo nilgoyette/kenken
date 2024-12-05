@@ -1,3 +1,4 @@
+import { Cell } from "../cell.ts";
 import { Cage } from "./lib.ts";
 
 export class Equal extends Cage {
@@ -7,6 +8,10 @@ export class Equal extends Cage {
     }
 
     solve(): boolean {
+        return false;
+    }
+
+    force(cells: Cell[], i: number): boolean {
         return false;
     }
 }
