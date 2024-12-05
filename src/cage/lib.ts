@@ -2,7 +2,7 @@ import { Cell, Position } from "../cell.ts";
 
 export type Direction = "row" | "col";
 
-export type Operation = "+" | "-" | "*" | "/" | "=";
+export type Operation = "+" | "-" | "*" | "/";
 
 export abstract class Cage {
     readonly n: number;

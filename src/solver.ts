@@ -1,5 +1,4 @@
-import { Equal } from "./cage/equal.ts";
-import { Cage, Direction } from "./cage/lib.ts";
+import { Direction } from "./cage/lib.ts";
 import { Cell } from "./cell.ts";
 import { KenKen } from "./kenken.ts";
 
@@ -15,10 +14,8 @@ export class Solver {
         this.kenken = kenken;
 
         // Apply the strategies that can only run once
-        for (const cage of kenken.cages) {
-            if (cage instanceof Equal) {
-                kenken.remove_cross_at(cage.cells[0]);
-            }
+        for (const cell of kenken.cells_eq) {
+            kenken.remove_cross_at(cell);
         }
         if (this.debug) {
             this.kenken.print();
@@ -26,12 +23,10 @@ export class Solver {
     }
 
     solve(): number[][] {
-        const cages = this.kenken.cages.filter((c) => !(c instanceof Equal));
-        
         let at_least_one = false;
         do {
             // 1 Solve the cages
-            if (this.solve_cages(cages)) {
+            if (this.solve_cages()) {
                 at_least_one = true;
                 if (this.debug) {
                     console.log(">>> 1");
@@ -69,9 +64,9 @@ export class Solver {
         return answer;
     }
 
-    solve_cages(cages: Cage[]): boolean {
+    solve_cages(): boolean {
         let at_least_one = false;
-        for (const cage of cages) {
+        for (const cage of this.kenken.cages) {
             if (cage.solve()) {
                 at_least_one = true;
             }

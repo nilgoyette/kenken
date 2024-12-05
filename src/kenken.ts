@@ -1,7 +1,6 @@
 import { writeAllSync } from "jsr:@std/io";
 
 import { Divide } from "./cage/divide.ts";
-import { Equal } from "./cage/equal.ts";
 import { Cage, Operation } from "./cage/lib.ts"
 import { Minus } from "./cage/minus.ts";
 import { Plus } from "./cage/plus.ts";
@@ -13,6 +12,7 @@ export class KenKen {
     readonly rows: Cell[][];
     readonly cols: Cell[][];
     cells: Cell[][];
+    cells_eq: Cell[];
     cages: Cage[];
 
     constructor(n: number) {
@@ -25,6 +25,7 @@ export class KenKen {
             }
             this.cells.push(row);
         }
+        this.cells_eq = [];
         this.cages = [];
 
         this.rows = this.cells;
@@ -51,7 +52,6 @@ export class KenKen {
             case "-": cage = new Minus(this.n, cells, result); break;
             case "*": cage = new Times(this.n, cells, result); break;
             case "/": cage = new Divide(this.n, cells, result); break;
-            case "=": cage = new Equal(this.n, cells, result); break;
         }
         this.cages.push(cage);
     }
@@ -70,7 +70,7 @@ export class KenKen {
 
         const cell = this.cells[y][x];
         cell.possibilities = new Set([answer]);
-        this.add_cell([cell], "=", answer);
+        // The cell will have cage_id == -1, which is acceptable.
     }
 
     // Ensure that the position `p` has not already been used by another cage.
