@@ -1,5 +1,5 @@
 import { Equal } from "./cage/equal.ts";
-import { Cage } from "./cage/lib.ts";
+import { Cage, Direction } from "./cage/lib.ts";
 import { Cell } from "./cell.ts";
 import { KenKen } from "./kenken.ts";
 
@@ -89,34 +89,52 @@ export class Solver {
 
     find_unique(): boolean {
         let at_least_one = false;
-        for (const row of this.kenken.rows) {
-            if (this.find_unique_in_line(row)) {
+        for (let idx = 0; idx < this.n; idx++) {
+            if (this.find_unique_in('row', idx)) {
                 at_least_one = true;
             }
         }
-        for (const col of this.kenken.cols) {
-            if (this.find_unique_in_line(col)) {
+        for (let idx = 0; idx < this.n; idx++) {
+            if (this.find_unique_in('col', idx)) {
                 at_least_one = true;
             }
         }
         return at_least_one;
     }
 
-    find_unique_in_line(line: Cell[]): boolean {
+    find_unique_in(direction: Direction, line_idx: number): boolean {
+        const line = (direction == 'row') ? this.kenken.rows[line_idx] : this.kenken.cols[line_idx];
+    
         let at_least_one = false;
         for (let i = 1; i <= this.n; i++) {
-            const has_it = line.map(
-                (c) => c.possibilities.has(i)
-            );
-            if (has_it.filter((c) => c).length == 1) {
-                const cell = line[has_it.findIndex((c) => c)];
-                // This is to avoid catching cell which we already have the answer
-                if (cell.possibilities.size > 1) {
-                    cell.possibilities = new Set([i]);
-                    this.kenken.remove_cross_at(cell);
-                    at_least_one = true;
-                }
+            const cells = line.filter((c) => c.possibilities.has(i));
+            const in_cage = cells.map((c) => c.cage_id);
+            const nb_cages = new Set(in_cage).size;
+            if (nb_cages != 1) {
+                continue;
             }
+    
+            const has_it = line.map((c) => c.possibilities.has(i));
+            const nb_cells = has_it.filter((c) => c).length;
+            if (cells.every((c) => c.possibilities.size == nb_cells)) {
+                // The cells already have an answer, lets stop. We could continue but we would 
+                // simply do the same thing over and over again and lose time.
+                continue;
+            }
+
+            if (nb_cells == 1) {
+                const cell = cells[0];
+                cell.possibilities = new Set([i]);
+                this.kenken.remove_cross_at(cell);
+            } else {
+                // The cells containing this number all in the same cage.
+                // 1. We must not remove the "cross" because it's on a row or a column. In fact,
+                //    we don't need to remove `i`, it's already not present in the other cells.
+                // 2. `i` must appear in those cells, so we must ask the cage to manage it.
+                const cage = this.kenken.cages[in_cage[0]];
+                cage.force(cells, i);
+            }
+            at_least_one = true;
         }
         return at_least_one;
     }
