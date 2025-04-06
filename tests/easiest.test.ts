@@ -3,8 +3,7 @@ import { expect } from "jsr:@std/expect";
 import { KenKen } from "../src/kenken.ts"
 import { Solver } from "../src/solver.ts";
 
-{
-    // 6766 Easiest +
+Deno.test("6766 +", () => {
     const k = new KenKen(5);
     k.add([[0, 0], [1, 0], [2, 0]], "+", 9);
     k.add([[3, 0], [4, 0]], "+", 6);
@@ -27,10 +26,9 @@ import { Solver } from "../src/solver.ts";
         [2, 4, 3, 1, 5],
         [4, 3, 1, 5, 2]
     ]);
-}
+});
 
-{
-    // 93752 Easiest +-/*
+Deno.test("93752 +-/*", () => {
     const k = new KenKen(5);
     k.add([[0, 0], [0, 1]], "*", 15);
     k.add([[0, 2], [0, 3]], "+", 3);
@@ -53,4 +51,4 @@ import { Solver } from "../src/solver.ts";
         [2, 1, 4, 3, 5],
         [4, 3, 5, 2, 1]
     ]);
-}
+});
