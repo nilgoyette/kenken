@@ -138,33 +138,34 @@ export abstract class CageMore extends Cage {
             current_possibilities.push(structuredClone(cell.possibilities));
             cell.possibilities = new Set<number>;
         }
-        return this.recurse(current_possibilities, 0, this.neutral());
-    }
 
-    recurse(current_possibilities: Set<number>[], at: number, running: number): boolean {
-        const cell = this.cells[at];
-        const c_p = current_possibilities[at];
-        if (at == this.cells.length - 1) {
-            const ans = this.whatsLeft(running);
-            const ok = c_p.has(ans) && this.can_use(ans, cell.position);
-            if (ok) {
-                cell.possibilities.add(ans);
-            }
-            return ok;
-        }
-    
-        let at_least_one = false;
-        for (const i of c_p) {
-            if (this.can_use(i, cell.position)) {
-                cell.trying = i;
-                if (this.recurse(current_possibilities, at + 1, this.ops(running, i))) {
-                    cell.possibilities.add(i);
-                    at_least_one = true;
+        const recurse = (at: number, running: number) => {
+            const cell = this.cells[at];
+            const c_p = current_possibilities[at];
+            if (at == this.cells.length - 1) {
+                const ans = this.whatsLeft(running);
+                const ok = c_p.has(ans) && this.can_use(ans, cell.position);
+                if (ok) {
+                    cell.possibilities.add(ans);
                 }
-                cell.trying = 0;
+                return ok;
             }
-        }
-        return at_least_one;
+
+            let at_least_one = false;
+            for (const i of c_p) {
+                if (this.can_use(i, cell.position)) {
+                    cell.trying = i;
+                    if (recurse(at + 1, this.ops(running, i))) {
+                        cell.possibilities.add(i);
+                        at_least_one = true;
+                    }
+                    cell.trying = 0;
+                }
+            }
+            return at_least_one;
+        };
+
+        return recurse(0, this.neutral());
     }
 
     force(cells: Cell[], i: number): boolean {
