@@ -168,13 +168,7 @@ export class Solver {
             }
             if (safe_cells.length == c1.possibilities.size) {
                 const numbers = [...c1.possibilities];
-                if (c1.position[0] == safe_cells[1].position[0]) {
-                    const y = c1.position[0];
-                    this.kenken.remove_possibility_on_row(safe_cells, y, numbers);
-                } else {
-                    const x = c1.position[1];
-                    this.kenken.remove_possibility_on_col(safe_cells, x, numbers);
-                }
+                this.kenken.remove_possibility_guess(safe_cells, numbers);
                 at_least_one = true;
             }
         }

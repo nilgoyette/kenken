@@ -92,6 +92,15 @@ export class KenKen {
         this.remove_possibility_on_col([cell], cell.position[1], answer);
     }
 
+    remove_possibility_guess(safe_cells: Cell[], numbers: number[]): void {
+        const [y, x] = safe_cells[0].position;
+        if (y == safe_cells[1].position[0]) {
+            this.remove_possibility_on_row(safe_cells, y, numbers);
+        } else {
+            this.remove_possibility_on_col(safe_cells, x, numbers);
+        }
+    }
+
     remove_possibility_on_row(safe_cells: Cell[], y: number, numbers: number[]): void {
         for (let x = 0; x < this.n; x++) {
             this.remove_possibility_at([y, x], safe_cells, numbers);
