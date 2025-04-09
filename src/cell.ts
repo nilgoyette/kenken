@@ -16,7 +16,7 @@ export class Cell {
     }
 
     save(): void {
-        this.saved_state = structuredClone(this.possibilities);
+        this.saved_state = new Set(this.possibilities);
     }
 
     load(): void {

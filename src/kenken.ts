@@ -44,7 +44,7 @@ export class KenKen {
         for (const cage of this.cages) {
             cage.save();
         }
-        // The = cells are not stores in this.cages
+        // The '=' cells are not stored in `this.cages`
         for (const cell of this.cells_eq) {
             cell.save();
         }
