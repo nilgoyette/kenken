@@ -17,6 +17,18 @@ export abstract class Cage {
         this.init();
     }
 
+    save(): void {
+        for (const cell of this.cells) {
+            cell.save();
+        }
+    }
+
+    load(): void {
+        for (const cell of this.cells) {
+            cell.load();
+        }
+    }
+
     /**
      * Initialize the cage with possible numbers.
      * 
