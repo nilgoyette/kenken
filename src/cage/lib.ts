@@ -109,23 +109,7 @@ export abstract class CageMore extends Cage {
     abstract whatsLeft(total: number): number;
 
     solve(): boolean {
-        const trying = Array(this.cells.length);
-        trying.fill(0);
-
-        const can_use = (number: number, at: Position) => {
-            for (let i = 0; i < this.cells.length; i++) {
-                const cell = this.cells[i];
-                if (trying[i] == 0) {
-                    return true;
-                }
-        
-                const same_col_row = cell.position[0] == at[0] || cell.position[1] == at[1];
-                if (number == trying[i] && same_col_row) {
-                    return false;
-                }
-            }
-            return true;
-        }
+        const trying = Array.from({length: this.cells.length}, () => 0);
 
         // We save the possibilities
         // - so that `recurse` uses it for bruteforcing
@@ -141,7 +125,7 @@ export abstract class CageMore extends Cage {
             const c_p = current_possibilities[at];
             if (at == this.cells.length - 1) {
                 const ans = this.whatsLeft(running);
-                const ok = c_p.has(ans) && can_use(ans, cell.position);
+                const ok = c_p.has(ans) && this.can_use(ans, cell.position, trying);
                 if (ok) {
                     cell.possibilities.add(ans);
                 }
@@ -150,7 +134,7 @@ export abstract class CageMore extends Cage {
 
             let at_least_one = false;
             for (const i of c_p) {
-                if (can_use(i, cell.position)) {
+                if (this.can_use(i, cell.position, trying)) {
                     trying[at] = i;
                     if (recurse(at + 1, this.ops(running, i))) {
                         cell.possibilities.add(i);
@@ -167,5 +151,22 @@ export abstract class CageMore extends Cage {
 
     force(cells: Cell[], i: number): boolean {
         return false;
+    }
+
+    private can_use(number: number, at: Position, trying: number[]): boolean {
+        const [at_y, at_x] = at;
+        for (let i = 0; i < this.cells.length; i++) {
+            const cell = this.cells[i];
+            if (trying[i] == 0) {
+                return true;
+            }
+    
+            const [cell_y, cell_x] = cell.position;
+            const same_col_row = cell_y == at_y || cell_x == at_x;
+            if (number == trying[i] && same_col_row) {
+                return false;
+            }
+        }
+        return true;
     }
 }

@@ -71,8 +71,8 @@ export class Solver {
                 at_least_one = true;
             }
 
-            // We might think that this case will be catched by `find_unique`, but there's a stop
-            // in that function to ensure that it's not working on already-solved cells. I unique
+            // We might think that this case will be caught by `find_unique`, but there's a stop
+            // in that function to ensure that it's not working on already-solved cells. A unique
             // possibility is "solved", by definition.
             for (const cell of cage.cells) {
                 const answer = cell.answer();
