@@ -71,7 +71,9 @@ export class Solver {
                 at_least_one = true;
             }
 
-            // TODO Do we actually need this? Won't it be done by `find_unique`?
+            // We might think that this case will be caught by `find_unique`, but there's a stop
+            // in that function to ensure that it's not working on already-solved cells. A unique
+            // possibility is "solved", by definition.
             for (const cell of cage.cells) {
                 const answer = cell.answer();
                 if (answer) {
@@ -166,13 +168,7 @@ export class Solver {
             }
             if (safe_cells.length == c1.possibilities.size) {
                 const numbers = [...c1.possibilities];
-                if (c1.position[0] == safe_cells[1].position[0]) {
-                    const y = c1.position[0];
-                    this.kenken.remove_possibility_on_row(safe_cells, y, numbers);
-                } else {
-                    const x = c1.position[1];
-                    this.kenken.remove_possibility_on_col(safe_cells, x, numbers);
-                }
+                this.kenken.remove_possibility_guess(safe_cells, numbers);
                 at_least_one = true;
             }
         }

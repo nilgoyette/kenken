@@ -45,30 +45,9 @@ export abstract class Cage {
             || this.cells.every((c) => c.position[1] == X);
     }
 
-    can_use(number: number, at: Position): boolean {
-        for (let i = 0; i < this.cells.length; i++) {
-            const cell = this.cells[i];
-            if (cell.trying == 0) {
-                return true;
-            }
-    
-            const same_col_row = cell.position[0] == at[0] || cell.position[1] == at[1];
-            if (number == cell.trying && same_col_row) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     set_to_all_cells(possibilities: Set<number>): void {
         for (const cell of this.cells) {
             cell.possibilities = new Set([...possibilities]);
-        }
-    }
-
-    reset_trying() {
-        for (const cell of this.cells) {
-            cell.trying = 0;
         }
     }
 };
@@ -130,6 +109,8 @@ export abstract class CageMore extends Cage {
     abstract whatsLeft(total: number): number;
 
     solve(): boolean {
+        const trying = Array.from({length: this.cells.length}, () => 0);
+
         // We save the possibilities
         // - so that `recurse` uses it for bruteforcing
         // - because `recurse` will fill `possibilities` with the next ones.
@@ -138,36 +119,54 @@ export abstract class CageMore extends Cage {
             current_possibilities.push(structuredClone(cell.possibilities));
             cell.possibilities = new Set<number>;
         }
-        return this.recurse(current_possibilities, 0, this.neutral());
-    }
 
-    recurse(current_possibilities: Set<number>[], at: number, running: number): boolean {
-        const cell = this.cells[at];
-        const c_p = current_possibilities[at];
-        if (at == this.cells.length - 1) {
-            const ans = this.whatsLeft(running);
-            const ok = c_p.has(ans) && this.can_use(ans, cell.position);
-            if (ok) {
-                cell.possibilities.add(ans);
-            }
-            return ok;
-        }
-    
-        let at_least_one = false;
-        for (const i of c_p) {
-            if (this.can_use(i, cell.position)) {
-                cell.trying = i;
-                if (this.recurse(current_possibilities, at + 1, this.ops(running, i))) {
-                    cell.possibilities.add(i);
-                    at_least_one = true;
+        const recurse = (at: number, running: number) => {
+            const cell = this.cells[at];
+            const c_p = current_possibilities[at];
+            if (at == this.cells.length - 1) {
+                const ans = this.whatsLeft(running);
+                const ok = c_p.has(ans) && this.can_use(ans, cell.position, trying);
+                if (ok) {
+                    cell.possibilities.add(ans);
                 }
-                cell.trying = 0;
+                return ok;
             }
-        }
-        return at_least_one;
+
+            let at_least_one = false;
+            for (const i of c_p) {
+                if (this.can_use(i, cell.position, trying)) {
+                    trying[at] = i;
+                    if (recurse(at + 1, this.ops(running, i))) {
+                        cell.possibilities.add(i);
+                        at_least_one = true;
+                    }
+                    trying[at] = 0;
+                }
+            }
+            return at_least_one;
+        };
+
+        return recurse(0, this.neutral());
     }
 
     force(cells: Cell[], i: number): boolean {
         return false;
+    }
+
+    private can_use(number: number, at: Position, trying: number[]): boolean {
+        const [at_y, at_x] = at;
+        for (let i = 0; i < this.cells.length; i++) {
+            const cell = this.cells[i];
+            if (trying[i] == 0) {
+                return true;
+            }
+    
+            const [cell_y, cell_x] = cell.position;
+            const same_col_row = cell_y == at_y || cell_x == at_x;
+            if (number == trying[i] && same_col_row) {
+                return false;
+            }
+        }
+        return true;
     }
 }

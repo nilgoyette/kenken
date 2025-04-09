@@ -5,14 +5,12 @@ export class Cell {
     possibilities: Set<number>;
     used: boolean;
     cage_id: number;
-    trying: number;
 
     constructor(position: Position) {
         this.position = position;
         this.possibilities = new Set<number>;
         this.used = false;
         this.cage_id = -1;
-        this.trying = 0;
     }
 
     answer(): number {
