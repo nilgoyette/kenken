@@ -40,6 +40,26 @@ export class KenKen {
         this.cols = cols;
     }
 
+    save(): void {
+        for (const cage of this.cages) {
+            cage.save();
+        }
+        // The '=' cells are not stored in `this.cages`
+        for (const cell of this.cells_eq) {
+            cell.save();
+        }
+    }
+
+    load(): void {
+        for (const cage of this.cages) {
+            cage.load();
+        }
+        // The = cells are not stores in this.cages
+        for (const cell of this.cells_eq) {
+            cell.load();
+        }
+    }
+
     add_cell(cells: Cell[], op: Operation, result: number): void {
         // Keep the id of the cage so we can know later if a cell is in the same cage as
         // another (simply compare their cage_id)
@@ -70,6 +90,7 @@ export class KenKen {
 
         const cell = this.cells[y][x];
         cell.possibilities = new Set([answer]);
+        this.cells_eq.push(cell);
         // The cell will have cage_id == -1, which is acceptable.
     }
 
@@ -92,7 +113,7 @@ export class KenKen {
         this.remove_possibility_on_col([cell], cell.position[1], answer);
     }
 
-    remove_possibility_guess(safe_cells: Cell[], numbers: number[]): void {
+    remove_possibility(safe_cells: Cell[], numbers: number[]): void {
         const [y, x] = safe_cells[0].position;
         if (y == safe_cells[1].position[0]) {
             this.remove_possibility_on_row(safe_cells, y, numbers);

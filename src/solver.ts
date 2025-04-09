@@ -168,7 +168,7 @@ export class Solver {
             }
             if (safe_cells.length == c1.possibilities.size) {
                 const numbers = [...c1.possibilities];
-                this.kenken.remove_possibility_guess(safe_cells, numbers);
+                this.kenken.remove_possibility(safe_cells, numbers);
                 at_least_one = true;
             }
         }
