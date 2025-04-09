@@ -113,7 +113,7 @@ export class KenKen {
         this.remove_possibility_on_col([cell], cell.position[1], answer);
     }
 
-    remove_possibility_guess(safe_cells: Cell[], numbers: number[]): void {
+    remove_possibility(safe_cells: Cell[], numbers: number[]): void {
         const [y, x] = safe_cells[0].position;
         if (y == safe_cells[1].position[0]) {
             this.remove_possibility_on_row(safe_cells, y, numbers);
