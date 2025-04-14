@@ -1,7 +1,7 @@
-import { CageMore } from "./lib.ts";
+import { Cage } from "./lib.ts";
 import { range } from "../cell.ts";
 
-export class Plus extends CageMore {
+export class Plus extends Cage {
     init(): void  {
         const all = range(1, this.n + 1);
         for (const cell of this.cells) {
