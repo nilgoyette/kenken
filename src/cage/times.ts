@@ -1,6 +1,6 @@
-import { CageMore } from "./lib.ts";
+import { Cage } from "./lib.ts";
 
-export class Times extends CageMore {
+export class Times extends Cage {
     init(): void  {
         const factors = new Set<number>;
         for (let f = 1; f <= this.n; f++) {

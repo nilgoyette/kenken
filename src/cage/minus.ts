@@ -1,7 +1,7 @@
-import { CageDouble } from "./lib.ts";
+import { Cage } from "./lib.ts";
 import { range } from "../cell.ts";
 
-export class Minus extends CageDouble {
+export class Minus extends Cage {
     init(): void  {
         const N = this.n + 1;
         if (this.result >= N / 2) {
@@ -15,7 +15,15 @@ export class Minus extends CageDouble {
         }
     }
 
+    neutral(): number {
+        return 0;
+    }
+
     ops(a: number, b: number): number {
         return a - b;
+    }
+
+    whatsLeft(total: number): number {
+        return this.result + total;
     }
 }
