@@ -110,23 +110,8 @@ export abstract class Cage {
     }
 
     #solve_n(): boolean {
-        const trying = Array(this.cells.length);
-        trying.fill(0);
-
-        const can_use = (number: number, at: Position) => {
-            for (let i = 0; i < this.cells.length; i++) {
-                const cell = this.cells[i];
-                if (trying[i] == 0) {
-                    return true;
-                }
-        
-                const same_col_row = cell.position[0] == at[0] || cell.position[1] == at[1];
-                if (number == trying[i] && same_col_row) {
-                    return false;
-                }
-            }
-            return true;
-        }
+        const cells_values = Array(this.cells.length);
+        cells_values.fill(0);
 
         // We save the possibilities
         // - so that `recurse` uses it for bruteforcing
@@ -142,7 +127,7 @@ export abstract class Cage {
             const c_p = current_possibilities[at];
             if (at == this.cells.length - 1) {
                 const ans = this.whatsLeft(running);
-                const ok = c_p.has(ans) && can_use(ans, cell.position);
+                const ok = c_p.has(ans) && this.can_use(ans, cell.position, cells_values);
                 if (ok) {
                     cell.possibilities.add(ans);
                 }
@@ -151,19 +136,34 @@ export abstract class Cage {
 
             let at_least_one = false;
             for (const i of c_p) {
-                if (can_use(i, cell.position)) {
-                    trying[at] = i;
+                if (this.can_use(i, cell.position, cells_values)) {
+                    cells_values[at] = i;
                     if (recurse(at + 1, this.ops(running, i))) {
                         cell.possibilities.add(i);
                         at_least_one = true;
                     }
-                    trying[at] = 0;
+                    cells_values[at] = 0;
                 }
             }
             return at_least_one;
         };
 
         return recurse(0, this.neutral());
+    }
+
+    can_use(number: number, at: Position, cells_values: number[]): boolean {
+        for (let i = 0; i < this.cells.length; i++) {
+            const cell = this.cells[i];
+            if (cells_values[i] == 0) {
+                return true;
+            }
+
+            const same_col_row = cell.position[0] == at[0] || cell.position[1] == at[1];
+            if (number == cells_values[i] && same_col_row) {
+                return false;
+            }
+        }
+        return true;
     }
 
     is_straight_line(): boolean {
