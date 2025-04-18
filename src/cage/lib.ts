@@ -47,8 +47,8 @@ export abstract class Cage {
             for (const cell of cells) {
                 const new_possibilities = new Set([i]);
                 for (const p of cell.possibilities) {
-                    const a = this.ops(i, p);
-                    const b = this.ops(p, i);
+                    const a = this.apply_ops(i, p);
+                    const b = this.apply_ops(p, i);
                     if (a == this.result || b == this.result) {
                         new_possibilities.add(p);
                         at_least_one = true;
@@ -62,8 +62,8 @@ export abstract class Cage {
     }
     
     abstract neutral(): number;
-    abstract ops(a: number, b: number): number;
-    abstract whatsLeft(total: number): number;
+    abstract apply_ops(a: number, b: number): number;
+    abstract apply_reverse_ops(total: number): number;
 
     /**
      * Remove as much possibilities as possible from the cells.
@@ -95,8 +95,8 @@ export abstract class Cage {
         for (const n1 of p1) {
             let at_least_one = false;
             for (const n2 of p2) {
-                const a = this.ops(n1, n2);
-                const b = this.ops(n2, n1);
+                const a = this.apply_ops(n1, n2);
+                const b = this.apply_ops(n2, n1);
                 if (a == this.result || b == this.result) {
                     at_least_one = true;
                     break;
@@ -126,7 +126,7 @@ export abstract class Cage {
             const cell = this.cells[at];
             const c_p = current_possibilities[at];
             if (at == this.cells.length - 1) {
-                const ans = this.whatsLeft(running);
+                const ans = this.apply_reverse_ops(running);
                 const ok = c_p.has(ans) && this.can_use(ans, cell.position, cells_values);
                 if (ok) {
                     cell.possibilities.add(ans);
@@ -138,7 +138,7 @@ export abstract class Cage {
             for (const i of c_p) {
                 if (this.can_use(i, cell.position, cells_values)) {
                     cells_values[at] = i;
-                    if (recurse(at + 1, this.ops(running, i))) {
+                    if (recurse(at + 1, this.apply_ops(running, i))) {
                         cell.possibilities.add(i);
                         at_least_one = true;
                     }

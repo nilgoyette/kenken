@@ -15,11 +15,11 @@ export class Times extends Cage {
         return 1;
     }
 
-    ops(a: number, b: number): number {
+    apply_ops(a: number, b: number): number {
         return a * b;
     }
 
-    whatsLeft(total: number): number {
+    apply_reverse_ops(total: number): number {
         return this.result / total;
     }
 }

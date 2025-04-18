@@ -19,11 +19,11 @@ export class Minus extends Cage {
         return 0;
     }
 
-    ops(a: number, b: number): number {
+    apply_ops(a: number, b: number): number {
         return a - b;
     }
 
-    whatsLeft(total: number): number {
+    apply_reverse_ops(total: number): number {
         return this.result + total;
     }
 }
