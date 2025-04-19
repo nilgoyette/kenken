@@ -66,7 +66,7 @@ export abstract class Cage {
     abstract apply_reverse_ops(total: number): number;
 
     /**
-     * Remove as much possibilities as possible from the cells.
+     * Remove most possibilities from the cells.
      * 
      * Ensures coherency **only** in the cage. Doesn't check the other cages or lines. This method
      * can be somewhat "slow" because it starts a bruteforce for all cells and all their
@@ -80,20 +80,27 @@ export abstract class Cage {
         }
     }
 
+    /**
+     * Remove most possibilities from a 2-cells cage.
+     */
     #solve_2(): boolean {
         const c1 = this.cells[0];
         const c2 = this.cells[1];
-        const nb_before_1 = c1.possibilities.size;
-        const nb_before_2 = c2.possibilities.size;
+        const prev_len1 = c1.possibilities.size;
+        const prev_len2 = c2.possibilities.size;
         c1.possibilities = this.#solve_side(c1.possibilities, c2.possibilities);
         c2.possibilities = this.#solve_side(c2.possibilities, c1.possibilities);
-        return (c1.possibilities.size != nb_before_1) || (c2.possibilities.size != nb_before_2);
+        return (c1.possibilities.size != prev_len1) || (c2.possibilities.size != prev_len2);
     }
 
+    /**
+     * Returns the possibilities in `p1` with respect to the possibilities in `p2`.
+     */
     #solve_side(p1: Set<number>, p2: Set<number>): Set<number> {
         const new_possibilities = new Set<number>;
         for (const n1 of p1) {
             let at_least_one = false;
+            // TODO Can easily be optimized with a single loop instead of 2.
             for (const n2 of p2) {
                 if (n1 === n2) {
                     continue;
@@ -113,6 +120,9 @@ export abstract class Cage {
         return new_possibilities;
     }
 
+    /**
+     * Remove most possibilities from a 3+ cells cage.
+     */
     #solve_n(): boolean {
         const cells_values = Array(this.cells.length);
         cells_values.fill(0);
@@ -155,6 +165,9 @@ export abstract class Cage {
         return recurse(0, this.neutral());
     }
 
+    /**
+     * Return `true` if it's possible to use `number` at `position`.
+     */
     can_use(number: number, at: Position, cells_values: number[]): boolean {
         for (let i = 0; i < this.cells.length; i++) {
             const cell = this.cells[i];
@@ -170,12 +183,18 @@ export abstract class Cage {
         return true;
     }
 
+    /**
+     * Return `true` if all cells in the cage are in a straight line.
+     */
     is_straight_line(): boolean {
         const [Y, X] = this.cells[0].position;
         return this.cells.every((c) => c.position[0] == Y)
             || this.cells.every((c) => c.position[1] == X);
     }
 
+    /**
+     * Apply the same set of possibilities to all cells in the cage.
+     */
     set_to_all_cells(possibilities: Set<number>): void {
         for (const cell of this.cells) {
             cell.possibilities = new Set([...possibilities]);
