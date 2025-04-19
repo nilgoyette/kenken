@@ -95,6 +95,10 @@ export abstract class Cage {
         for (const n1 of p1) {
             let at_least_one = false;
             for (const n2 of p2) {
+                if (n1 === n2) {
+                    continue;
+                }
+
                 const a = this.apply_ops(n1, n2);
                 const b = this.apply_ops(n2, n1);
                 if (a == this.result || b == this.result) {
