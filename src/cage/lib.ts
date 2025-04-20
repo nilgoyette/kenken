@@ -62,8 +62,9 @@ export abstract class Cage {
     }
     
     abstract neutral(): number;
+    abstract ordered(): boolean;
     abstract apply_ops(a: number, b: number): number;
-    abstract apply_reverse_ops(total: number): number;
+    abstract apply_reverse_ops(a: number, b: number): number;
 
     /**
      * Remove most possibilities from the cells.
@@ -99,21 +100,20 @@ export abstract class Cage {
     #solve_side(p1: Set<number>, p2: Set<number>): Set<number> {
         const new_possibilities = new Set<number>;
         for (const n1 of p1) {
-            let at_least_one = false;
-            // TODO Can easily be optimized with a single loop instead of 2.
-            for (const n2 of p2) {
-                if (n1 === n2) {
-                    continue;
-                }
-
-                const a = this.apply_ops(n1, n2);
-                const b = this.apply_ops(n2, n1);
-                if (a == this.result || b == this.result) {
-                    at_least_one = true;
-                    break;
-                }
+            // Unordered operations (+ and *) are simple: they require a single math operation
+            // (the reverse) to discover the unknown element. For example:
+            // 1 + 3 = 4 => 4 - 1 = 3
+            // 2 * 4 = 8 => 8 / 2 = 4
+            const a = this.apply_reverse_ops(this.result, n1);
+            let ok = n1 != a && p2.has(a)
+            if (this.ordered()) {
+                // However, ordered operations are more complex: they require a second check For example:
+                // 5 - 1 = 4 => 4 + 1 = 5   OR   5 - 4 = 1
+                // 6 / 3 = 2 => 2 * 3 = 6   OR   6 / 2 = 3
+                const b = this.apply_ops(n1, this.result);
+                ok = ok || n1 != b && p2.has(b);
             }
-            if (at_least_one) {
+            if (ok) {
                 new_possibilities.add(n1);
             }
         }
@@ -140,7 +140,7 @@ export abstract class Cage {
             const cell = this.cells[at];
             const c_p = current_possibilities[at];
             if (at == this.cells.length - 1) {
-                const ans = this.apply_reverse_ops(running);
+                const ans = this.apply_reverse_ops(this.result, running);
                 const ok = c_p.has(ans) && this.can_use(ans, cell.position, cells_values);
                 if (ok) {
                     cell.possibilities.add(ans);
