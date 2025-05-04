@@ -1,4 +1,4 @@
-import { CageDouble } from "./lib.ts";
+import { Cage } from "./lib.ts";
 
 const SAME_AS = [
     0, 0, 0, 0, 4, 4, 6, 6, 8, 9
@@ -13,7 +13,7 @@ const DIVISORS = new Map<string, Set<number>>([
     ["9,3", new Set([1, 2, 3, 6, 9])],
 ]);
 
-export class Divide extends CageDouble {
+export class Divide extends Cage {
     init(): void  {
         const at = SAME_AS[this.n];
         const key = [at, this.result].join(",");
@@ -29,7 +29,19 @@ export class Divide extends CageDouble {
         this.set_to_all_cells(DIVISORS.get(key2)!);
     }
 
-    ops(a: number, b: number): number {
+    neutral(): number {
+        return 1;
+    }
+
+    ordered(): boolean {
+        return true;
+    }
+
+    apply_ops(a: number, b: number): number {
         return a / b;
+    }
+
+    apply_reverse_ops(a: number, b: number): number {
+        return a * b;
     }
 }

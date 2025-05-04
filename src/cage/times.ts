@@ -1,6 +1,6 @@
-import { CageMore } from "./lib.ts";
+import { Cage } from "./lib.ts";
 
-export class Times extends CageMore {
+export class Times extends Cage {
     init(): void  {
         const factors = new Set<number>;
         for (let f = 1; f <= this.n; f++) {
@@ -15,11 +15,15 @@ export class Times extends CageMore {
         return 1;
     }
 
-    ops(a: number, b: number): number {
+    ordered(): boolean {
+        return false;
+    }
+
+    apply_ops(a: number, b: number): number {
         return a * b;
     }
 
-    whatsLeft(total: number): number {
-        return this.result / total;
+    apply_reverse_ops(a: number, b: number): number {
+        return a / b;
     }
 }

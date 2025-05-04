@@ -1,7 +1,7 @@
-import { CageMore } from "./lib.ts";
+import { Cage } from "./lib.ts";
 import { range } from "../cell.ts";
 
-export class Plus extends CageMore {
+export class Plus extends Cage {
     init(): void  {
         const all = range(1, this.n + 1);
         for (const cell of this.cells) {
@@ -13,11 +13,15 @@ export class Plus extends CageMore {
         return 0;
     }
 
-    ops(a: number, b: number): number {
+    ordered(): boolean {
+        return false;
+    }
+
+    apply_ops(a: number, b: number): number {
         return a + b;
     }
 
-    whatsLeft(total: number): number {
-        return this.result - total;
+    apply_reverse_ops(a: number, b: number): number {
+        return a - b;
     }
 }
