@@ -132,15 +132,15 @@ export abstract class Cage {
         // - because `recurse` will fill `possibilities` with the next ones.
         const current_possibilities: Set<number>[] = [];
         for (const cell of this.cells) {
-            current_possibilities.push(structuredClone(cell.possibilities));
+            current_possibilities.push(new Set(cell.possibilities));
             cell.possibilities = new Set<number>;
         }
 
-        const recurse = (at: number, running: number) => {
+        const recurse = (at: number, acc: number) => {
             const cell = this.cells[at];
             const c_p = current_possibilities[at];
             if (at == this.cells.length - 1) {
-                const ans = this.apply_reverse_ops(this.result, running);
+                const ans = this.apply_reverse_ops(this.result, acc);
                 const ok = c_p.has(ans) && this.can_use(ans, cell.position, cells_values);
                 if (ok) {
                     cell.possibilities.add(ans);
@@ -152,7 +152,7 @@ export abstract class Cage {
             for (const i of c_p) {
                 if (this.can_use(i, cell.position, cells_values)) {
                     cells_values[at] = i;
-                    if (recurse(at + 1, this.apply_ops(running, i))) {
+                    if (recurse(at + 1, this.apply_ops(acc, i))) {
                         cell.possibilities.add(i);
                         at_least_one = true;
                     }
